@@ -17,11 +17,17 @@ enum CollisionTypes: UInt32 {
 }
 
 class GameScene: SKScene {
+    
+    var player: SKSpriteNode!
+    
     override func didMoveToView(view: SKView) {
         let background = SKSpriteNode(imageNamed: "background.jpg")
         background.position = CGPoint(x: 512, y: 384)
         background.blendMode = .Replace
         addChild(background)
+        
+        loadLevel()
+        createPlayer()
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
@@ -88,5 +94,18 @@ class GameScene: SKScene {
                 }
             }
         }
+    }
+    
+    func createPlayer() {
+        player = SKSpriteNode(imageNamed: "player")
+        player.position = CGPoint(x: 96, y: 672)
+        player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width / 2)
+        player.physicsBody!.allowsRotation = false
+        player.physicsBody!.linearDamping = 0.5
+        
+        player.physicsBody!.categoryBitMask = CollisionTypes.Player.rawValue
+        player.physicsBody!.contactTestBitMask = CollisionTypes.Star.rawValue | CollisionTypes.Vortex.rawValue | CollisionTypes.Finish.rawValue
+        player.physicsBody!.collisionBitMask = CollisionTypes.Wall.rawValue
+        addChild(player)
     }
 }
